@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<robot name="robot_con_pinza">
+
+  <!-- ============ MATERIALES ============ -->
+  <material name="base_material">
+    <color rgba="0.3 0.3 0.3 1"/>  <!-- Gris oscuro -->
+  </material>
+  <material name="brazo1_material">
+    <color rgba="0.2 0.6 0.8 1"/>  <!-- Azul celeste -->
+  </material>
+  <material name="brazo2_material">
+    <color rgba="0.9 0.5 0.1 1"/>  <!-- Naranja -->
+  </material>
+  <material name="pinza_material">
+    <color rgba="0.8 0.2 0.2 1"/>  <!-- Rojo -->
+  </material>
+  <material name="dedo_material">
+    <color rgba="0.9 0.9 0.9 1"/>  <!-- Blanco/gris claro -->
+  </material>
+  <material name="efector_material">
+    <color rgba="0.0 0.8 0.0 1"/>  <!-- Verde -->
+  </material>
+
+  <!-- ============ LINK 0: BASE ============ -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.25"/>
+      </geometry>
+      <origin xyz="0 0 0.075"/>
+      <material name="base_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.25"/>
+      </geometry>
+      <origin xyz="0 0 0.075"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.075"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0175" ixy="0" ixz="0" iyy="0.0175" iyz="0" izz="0.03125"/>
+    </inertial>
+  </link>
+
+  <!-- ============ JOINT 1: BASE - BRAZO1 ============ -->
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="brazo1_link"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.5" upper="2.5" effort="100" velocity="1.5"/>
+    <dynamics damping="0.1" friction="0.05"/>
+  </joint>
+
+  <!-- ============ LINK 1: BRAZO INFERIOR ============ -->
+  <link name="brazo1_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.35" radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0.175"/>
+      <material name="brazo1_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.35" radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0.175"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.175"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.003333" ixy="0" ixz="0" iyy="0.003333" iyz="0" izz="0.00054"/>
+    </inertial>
+  </link>
+
+  <!-- ============ JOINT 2: BRAZO1 - BRAZO2 ============ -->
+  <joint name="joint_2" type="revolute">
+    <parent link="brazo1_link"/>
+    <child link="brazo2_link"/>
+    <origin xyz="0 0 0.35" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.0" upper="2.0" effort="80" velocity="1.2"/>
+    <dynamics damping="0.1" friction="0.05"/>
+  </joint>
+
+  <!-- ============ LINK 2: BRAZO SUPERIOR ============ -->
+  <link name="brazo2_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.30" radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0.15"/>
+      <material name="brazo2_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.30" radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0.15"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.15"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.001625" ixy="0" ixz="0" iyy="0.001625" iyz="0" izz="0.00025"/>
+    </inertial>
+  </link>
+
+  <!-- ============ JOINT 3: BRAZO2 - PINZA (FIJO) ============ -->
+  <!-- Cambiado de "prismatic" a "fixed": antes este joint dejaba que TODO
+       el bloque rojo se deslizara lejos del brazo naranja. Ahora queda
+       rigidamente pegado al brazo para siempre; solo los dedos blancos
+       (joint_dedo_izq / joint_dedo_der) se abren y cierran. -->
+  <joint name="joint_gripper" type="fixed">
+    <parent link="brazo2_link"/>
+    <child link="gripper_base"/>
+    <origin xyz="0 0 0.30" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============ LINK 3: BASE DE LA PINZA ============ -->
+  <!-- Sin <collision> a proposito: al tener los dedos tocandose entre si
+       en la posicion cerrada, dejar la colision fisica activa generaba
+       fuerzas de contacto que "explotaban" y separaban toda la pinza del
+       brazo. Como aqui solo se necesita el movimiento visual (posicion
+       controlada por el motor del joint, no fisica de agarre real), se
+       quita la colision y el problema desaparece. -->
+  <link name="gripper_base">
+    <visual>
+      <geometry>
+        <box size="0.08 0.12 0.04"/>
+      </geometry>
+      <origin xyz="0 0 0.02"/>
+      <material name="pinza_material"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.02"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001333" ixy="0" ixz="0" iyy="0.0000667" iyz="0" izz="0.0001733"/>
+    </inertial>
+  </link>
+
+  <!-- ============ LINK 4: DEDO IZQUIERDO ============ -->
+  <!-- Largo (Z) aumentado de 0.06 a 0.09. Origen z=0.085 para que el dedo
+       siga empezando justo en z=0.04 (borde superior del bloque rojo),
+       solo que ahora se extiende un poco mas hacia arriba.
+       El offset en X (-0.015) NO se toco, para no cambiar el espacio
+       entre las dos pinzas que ya habia quedado bien. -->
+  <link name="dedo_izquierdo">
+    <visual>
+      <geometry>
+        <box size="0.03 0.08 0.09"/>
+      </geometry>
+      <origin xyz="-0.015 0 0.085"/>
+      <material name="dedo_material"/>
+    </visual>
+    <inertial>
+      <origin xyz="-0.015 0 0.085"/>
+      <mass value="0.05"/>
+      <inertia ixx="0.0000604" ixy="0" ixz="0" iyy="0.0000375" iyz="0" izz="0.0000304"/>
+    </inertial>
+  </link>
+
+  <!-- ============ JOINT 4: PINZA - DEDO IZQUIERDO ============ -->
+  <!-- upper=0.04 -> en apertura maxima, el borde INTERNO del dedo (el que
+       mira hacia el centro) queda exactamente alineado con el borde
+       EXTERNO del bloque rojo (que esta en x=+-0.04, mitad de su ancho
+       de 0.08 m). -->
+  <joint name="joint_dedo_izq" type="prismatic">
+    <parent link="gripper_base"/>
+    <child link="dedo_izquierdo"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="0.0" upper="0.04" effort="20" velocity="0.5"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- ============ LINK 5: DEDO DERECHO ============ -->
+  <!-- Mismo criterio que el dedo izquierdo, en espejo (+0.015) -->
+  <link name="dedo_derecho">
+    <visual>
+      <geometry>
+        <box size="0.03 0.08 0.09"/>
+      </geometry>
+      <origin xyz="0.015 0 0.085"/>
+      <material name="dedo_material"/>
+    </visual>
+    <inertial>
+      <origin xyz="0.015 0 0.085"/>
+      <mass value="0.05"/>
+      <inertia ixx="0.0000604" ixy="0" ixz="0" iyy="0.0000375" iyz="0" izz="0.0000304"/>
+    </inertial>
+  </link>
+
+  <!-- ============ JOINT 5: PINZA - DEDO DERECHO ============ -->
+  <joint name="joint_dedo_der" type="prismatic">
+    <parent link="gripper_base"/>
+    <child link="dedo_derecho"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0.0" upper="0.04" effort="20" velocity="0.5"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+</robot>
