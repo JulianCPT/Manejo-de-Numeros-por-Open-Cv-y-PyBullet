@@ -104,7 +104,7 @@ y enciende un LED como confirmación.
   </tr>
   <tr>
     <td align="center" colspan="2">
-      <img src="docs/im%C3%A1genes/Punto%201%20Vision%20de%20PyBullet%20Funcionando.jpg" width="720"/><br/>
+      <img src="docs/im%C3%A1genes/Punto%201/Vision%20de%20PyBullet%20Funcionando.jfif" width="720"/><br/>
       <sub>Vista de PyBullet con el brazo dibujando</sub>
     </td>
   </tr>
@@ -151,15 +151,15 @@ y enciende un LED como confirmación.
 <table>
   <tr>
     <td align="center" valign="top" width="33%">
-      <img src="docs/videos/GIF%20Punto%201.gif" width="100%" alt="GIF del Punto 1: brazo dibujando"/><br/>
+      <img src="docs/videos/Punto%201/GIF%20Punto%201.gif" width="100%" alt="GIF del Punto 1: brazo dibujando"/><br/>
       <sub>🟢 <b>Punto 1</b> · brazo dibujando</sub>
     </td>
     <td align="center" valign="top" width="33%">
-      <img src="docs/videos/GIF%20Punto%201%20LCD.gif" width="100%" alt="GIF del Punto 1: teclado y LCD"/><br/>
+      <img src="docs/videos/Punto%201/GIF%20Punto%201%20LCD.gif" width="100%" alt="GIF del Punto 1: teclado y LCD"/><br/>
       <sub>🟢 <b>Punto 1</b> · teclado y LCD</sub>
     </td>
     <td align="center" valign="top" width="33%">
-      <img src="docs/videos/GIF%20Punto%202.gif" width="100%" alt="GIF del Punto 2: reconocimiento de dígitos"/><br/>
+      <img src="docs/videos/Punto%202/GIF%20Punto%202.gif" width="100%" alt="GIF del Punto 2: reconocimiento de dígitos"/><br/>
       <sub>🔴 <b>Punto 2</b> · reconocimiento de dígitos</sub>
     </td>
   </tr>
@@ -178,10 +178,10 @@ Cada columna es un punto, con su propio color: 🔵 **Punto 1** y 🔴 **Punto 2
 <table>
   <tr>
     <td align="center" valign="top" width="50%">
-      <img src="docs/im%C3%A1genes/diagrama-arquitectura-punto-1.svg" width="100%" alt="Arquitectura del Punto 1: teclado, ESP32, Python y brazo en PyBullet"/>
+      <img src="docs/im%C3%A1genes/Punto%201/diagrama-arquitectura-punto-1.svg" width="100%" alt="Arquitectura del Punto 1: teclado, ESP32, Python y brazo en PyBullet"/>
     </td>
     <td align="center" valign="top" width="50%">
-      <img src="docs/im%C3%A1genes/diagrama-arquitectura-punto-2.svg" width="100%" alt="Arquitectura del Punto 2: cámara, OpenCV, CNN, SPI y OLED"/>
+      <img src="docs/im%C3%A1genes/Punto%202/diagrama-arquitectura-punto-2.svg" width="100%" alt="Arquitectura del Punto 2: cámara, OpenCV, CNN, SPI y OLED"/>
     </td>
   </tr>
 </table>
@@ -232,8 +232,12 @@ Manejo-de-Numeros-por-Open-Cv-y-PyBullet/
 │   └── esp32_s3_esclavo_spi_oled/
 │       └── esp32_s3_esclavo_spi_oled.ino   # ESP32-S3: SPI (esclavo) -> OLED
 ├── docs/
-│   ├── imágenes/                           # Capturas del montaje + diagramas de arquitectura (.svg)
-│   └── videos/                             # Videos (.mp4) y GIFs de vista rápida
+│   ├── imágenes/                           # Capturas del montaje y diagramas (.svg), por punto
+│   │   ├── Punto 1/
+│   │   └── Punto 2/
+│   └── videos/                             # Videos (.mp4) y GIFs de vista rápida, por punto
+│       ├── Punto 1/
+│       └── Punto 2/
 └── README.md
 ```
 
